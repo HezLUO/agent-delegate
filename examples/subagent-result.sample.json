@@ -1,0 +1,14 @@
+{
+  "task": "Fix slow auth tests after session refactor",
+  "results": [
+    {
+      "brief_title": "Investigate fixture setup",
+      "status": "done",
+      "summary": "Fixtures create expired sessions before the assertion path runs.",
+      "evidence": ["tests/auth/fixtures.ts:18"],
+      "open_questions": [],
+      "recommended_next_steps": ["Inspect fixture expiry setup in the main agent."]
+    }
+  ],
+  "target_tokens": 800
+}

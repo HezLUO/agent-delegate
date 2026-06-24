@@ -1,0 +1,24 @@
+{
+  "task": "Fix slow auth tests after session refactor",
+  "current_phase": "investigation",
+  "context_summary": "The main agent has inspected auth runtime, middleware, fixtures, and test helpers. No implementation has started.",
+  "files_read": [
+    { "path": "src/auth/session.ts", "module": "auth", "summary": "Session validation and refresh logic", "tokens_estimate": 1200 },
+    { "path": "src/auth/middleware.ts", "module": "auth", "summary": "Auth middleware path", "tokens_estimate": 900 },
+    { "path": "tests/auth/fixtures.ts", "module": "tests", "summary": "Auth test fixture setup", "tokens_estimate": 800 },
+    { "path": "tests/auth/session.test.ts", "module": "tests", "summary": "Slow test cases", "tokens_estimate": 1000 },
+    { "path": "tests/helpers/time.ts", "module": "tests", "summary": "Time helpers", "tokens_estimate": 500 },
+    { "path": "src/config/auth.ts", "module": "config", "summary": "Auth config defaults", "tokens_estimate": 400 },
+    { "path": "src/http/cookies.ts", "module": "http", "summary": "Cookie handling", "tokens_estimate": 600 },
+    { "path": "src/auth/token.ts", "module": "auth", "summary": "Token parsing", "tokens_estimate": 700 }
+  ],
+  "open_questions": [
+    "Is runtime session refresh causing delay?",
+    "Are fixtures creating expired sessions?"
+  ],
+  "metrics": {
+    "turns_without_write": 4,
+    "investigation_minutes": 14,
+    "tool_output_tokens_estimate": 9000
+  }
+}
