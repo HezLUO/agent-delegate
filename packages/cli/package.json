@@ -1,0 +1,17 @@
+{
+  "name": "agent-delegate",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "agent-delegate": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@agent-delegate/core": "0.1.0",
+    "@agent-delegate/mcp-server": "0.1.0"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "agent-delegate-repo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "MCP-first delegation advisor for coding agents.",
+  "workspaces": [
+    "packages/core",
+    "packages/mcp-server",
+    "packages/cli"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "vitest run",
+    "typecheck": "tsc -b packages/core packages/mcp-server packages/cli",
+    "agent-delegate": "tsx packages/cli/src/index.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.1.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.25.0"
+  }
+}
