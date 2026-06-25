@@ -1,4 +1,10 @@
-import { RecordEventInput, RecordEventInputSchema, AgentEvent } from "./schema.js";
+import {
+  AgentState,
+  CommandObservationSchema,
+  RecordEventInput,
+  RecordEventInputSchema,
+  AgentEvent
+} from "./schema.js";
 import { containsSecretLikeContent } from "./redaction.js";
 
 export type RecordEventResult =
@@ -9,6 +15,19 @@ export type EventSession = {
   session_id: string;
   events: AgentEvent[];
 };
+
+export type EventDerivedAgentState = Partial<
+  Pick<
+    AgentState,
+    | "task"
+    | "context_summary"
+    | "files_read"
+    | "commands_run"
+    | "files_written"
+    | "open_questions"
+    | "findings"
+  >
+>;
 
 export type EventStore = {
   record(input: RecordEventInput): RecordEventResult;
@@ -31,6 +50,86 @@ function copySession(session: EventSession): EventSession {
   return {
     session_id: session.session_id,
     events: session.events.map(copyEvent)
+  };
+}
+
+function eventSummary(event: AgentEvent): string | undefined {
+  return event.summary?.trim() || undefined;
+}
+
+function commandStatus(status: string | undefined): "passed" | "failed" | "unknown" {
+  const parsed = CommandObservationSchema.shape.status.safeParse(status);
+  return parsed.success ? parsed.data : "unknown";
+}
+
+export function eventSessionToAgentState(session: EventSession): EventDerivedAgentState {
+  const filesRead: NonNullable<EventDerivedAgentState["files_read"]> = [];
+  const commandsRun: NonNullable<EventDerivedAgentState["commands_run"]> = [];
+  const filesWritten: string[] = [];
+  const openQuestions: string[] = [];
+  const findings: NonNullable<EventDerivedAgentState["findings"]> = [];
+  const contextParts: string[] = [];
+  let task: string | undefined;
+
+  for (const event of session.events) {
+    const summary = eventSummary(event);
+
+    if (event.type === "task_started" && summary) {
+      task ??= summary;
+      contextParts.push(summary);
+      continue;
+    }
+
+    if (event.type === "file_read" && event.path) {
+      filesRead.push({
+        path: event.path,
+        ...(summary ? { summary } : {}),
+        ...(event.tokens_estimate !== undefined ? { tokens_estimate: event.tokens_estimate } : {})
+      });
+      continue;
+    }
+
+    if ((event.type === "command_run" || event.type === "test_run") && event.command) {
+      commandsRun.push({
+        command: event.command,
+        status: commandStatus(event.status),
+        ...(summary ? { summary } : {}),
+        ...(event.tokens_estimate !== undefined ? { tokens_estimate: event.tokens_estimate } : {})
+      });
+      continue;
+    }
+
+    if (event.type === "file_written" && event.path) {
+      filesWritten.push(event.path);
+      continue;
+    }
+
+    if (event.type === "question_identified" && summary) {
+      openQuestions.push(summary);
+      continue;
+    }
+
+    if (
+      (event.type === "error_seen" ||
+        event.type === "plan_created" ||
+        event.type === "delegation_decision") &&
+      summary
+    ) {
+      findings.push({ summary, evidence: [] });
+      if (event.type !== "error_seen") {
+        contextParts.push(summary);
+      }
+    }
+  }
+
+  return {
+    ...(task ? { task } : {}),
+    ...(contextParts.length > 0 ? { context_summary: contextParts.join(" ") } : {}),
+    files_read: filesRead,
+    commands_run: commandsRun,
+    files_written: filesWritten,
+    open_questions: openQuestions,
+    findings
   };
 }
 

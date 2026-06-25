@@ -1,8 +1,10 @@
 const SECRET_PATTERNS = [
   /sk-[A-Za-z0-9_-]{20,}/,
   /sk-proj-[A-Za-z0-9_-]{20,}/,
+  /authorization\s*:?\s*bearer\s+[A-Za-z0-9._~+/=-]{16,}/i,
   /api[_-]?key\s*[:=]\s*[A-Za-z0-9_-]{16,}/i,
   /token\s*[:=]\s*[A-Za-z0-9_-]{16,}/i,
+  /--token(?:=|\s+)(?:\\?["'])?[A-Za-z0-9._~+/=-]{16,}(?:\\?["'])?/i,
   /password\s*[:=]\s*\S{8,}/i
 ];
 

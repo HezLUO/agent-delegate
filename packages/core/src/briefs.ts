@@ -68,7 +68,8 @@ export function generateDelegationBriefs(input: unknown): {
   suggested_next_step?: string;
 } {
   const state = GenerateBriefsInputSchema.parse(input);
-  const questions = state.open_questions.slice(0, state.max_briefs);
+  const maxBriefs = Math.min(state.max_briefs, state.constraints.max_subagents);
+  const questions = state.open_questions.slice(0, maxBriefs);
 
   if (questions.length === 0) {
     return {
@@ -142,7 +143,9 @@ export function assessBriefQuality(input: unknown): BriefQualityResult {
   }
 
   const impliesWrite = [
+    brief.title,
     brief.goal,
+    brief.context,
     ...brief.questions,
     ...brief.expected_output,
     ...brief.stop_conditions

@@ -57,4 +57,44 @@ describe("summarizeSubagentResults", () => {
 
     expect(summary.files_to_revisit).toEqual(["tests/auth/fixtures.ts", "src/auth/session.ts"]);
   });
+
+  it("bounds oversized result summaries by target tokens", () => {
+    const longSummary = Array.from({ length: 120 }, (_, index) => `word${index}`).join(" ");
+    const summary = summarizeSubagentResults({
+      task: "Fix slow auth tests",
+      results: [
+        {
+          brief_title: "Investigate fixture setup",
+          status: "done",
+          summary: longSummary,
+          evidence: ["tests/auth/fixtures.ts:18"]
+        }
+      ],
+      target_tokens: 40
+    });
+
+    expect(summary.summary.split(/\s+/).length).toBeLessThanOrEqual(31);
+    expect(summary.summary).toMatch(/\.\.\.$/);
+  });
+
+  it("preserves conflict and disagreement strings", () => {
+    const summary = summarizeSubagentResults({
+      task: "Fix slow auth tests",
+      results: [
+        {
+          brief_title: "Investigate fixture setup",
+          status: "done",
+          summary: "Conflict: fixtures point to expiry while runtime shows a different root cause.",
+          evidence: ["tests/auth/fixtures.ts:18"],
+          open_questions: ["This contradicts the middleware timing finding."]
+        }
+      ],
+      target_tokens: 800
+    });
+
+    expect(summary.conflicts_or_disagreements).toEqual([
+      "Investigate fixture setup: Conflict: fixtures point to expiry while runtime shows a different root cause.",
+      "Investigate fixture setup: This contradicts the middleware timing finding."
+    ]);
+  });
 });

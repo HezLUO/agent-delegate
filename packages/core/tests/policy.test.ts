@@ -49,6 +49,55 @@ describe("assessDelegationNeed", () => {
     expect(assessment.reasons.length).toBeGreaterThan(0);
   });
 
+  it("respects constraints max_subagents in suggested brief count", () => {
+    const assessment = assessDelegationNeed({
+      task: "Fix slow auth tests",
+      current_phase: "investigation",
+      context_summary: "Read auth runtime, middleware, fixtures, and test helpers.",
+      files_read: [
+        { path: "src/auth/session.ts", module: "auth" },
+        { path: "src/auth/middleware.ts", module: "auth" },
+        { path: "src/auth/token.ts", module: "auth" },
+        { path: "tests/auth/session.test.ts", module: "tests" },
+        { path: "tests/auth/fixtures.ts", module: "tests" },
+        { path: "tests/helpers/time.ts", module: "tests" },
+        { path: "src/config/auth.ts", module: "config" },
+        { path: "src/http/cookies.ts", module: "http" }
+      ],
+      open_questions: [
+        "Is token refresh timing responsible?",
+        "Are fixtures creating expired sessions?"
+      ],
+      constraints: { max_subagents: 1, allow_write_agents: false },
+      metrics: {
+        turns_without_write: 4,
+        investigation_minutes: 14,
+        tool_output_tokens_estimate: 9000
+      }
+    });
+
+    expect(assessment.recommendation).toBe("dispatch_readonly");
+    expect(assessment.suggested_brief_count).toBe(1);
+  });
+
+  it("prefers summarizing context over a low-confidence near-tie dispatch", () => {
+    const assessment = assessDelegationNeed({
+      task: "Investigate checkout mismatch",
+      current_phase: "investigation",
+      context_summary: "Thin notes.",
+      files_read: [
+        { path: "src/checkout/totals.ts", module: "checkout" },
+        { path: "src/checkout/discounts.ts", module: "checkout" },
+        { path: "src/cart/totals.ts", module: "cart" }
+      ],
+      open_questions: ["Why does the total differ?", "Does cart rounding differ?"]
+    });
+
+    expect(assessment.scores.dispatch_readonly).toBeGreaterThan(assessment.scores.summarize_context);
+    expect(assessment.confidence).toBe("low");
+    expect(assessment.recommendation).toBe("summarize_context");
+  });
+
   it("summarizes context when investigation is large but split is unclear", () => {
     const assessment = assessDelegationNeed({
       task: "Understand why checkout behavior changed",

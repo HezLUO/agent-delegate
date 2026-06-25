@@ -14,6 +14,17 @@ function evidenceToFile(evidence: string): string | undefined {
   return LOCAL_FILE_EVIDENCE_PATTERN.exec(evidence)?.[1];
 }
 
+const CONFLICT_PATTERN = /\b(conflict|disagree|disagreement|contradiction|contradict|contradicts|inconsistent|mismatch|different root cause)\b/i;
+
+function truncateWords(text: string, maxWords: number): string {
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  if (words.length <= maxWords) {
+    return text;
+  }
+
+  return `${words.slice(0, Math.max(1, maxWords - 1)).join(" ")} ...`;
+}
+
 export function summarizeSubagentResults(input: unknown): SubagentResultSummary {
   const parsed = SubagentResultInputSchema.parse(input);
   const results = parsed.results.map((result) => SubagentResultSchema.parse(result));
@@ -28,7 +39,15 @@ export function summarizeSubagentResults(input: unknown): SubagentResultSummary 
   const nextSteps = unique(results.flatMap((result) => result.recommended_next_steps));
 
   const summaryParts = results.map((result) => `${result.brief_title}: ${result.summary}`);
-  const summary = summaryParts.join(" ");
+  const maxSummaryWords = Math.max(1, Math.floor(parsed.target_tokens * 0.75));
+  const summary = truncateWords(summaryParts.join(" "), maxSummaryWords);
+  const conflicts = unique(
+    results.flatMap((result) =>
+      [result.summary, ...result.open_questions]
+        .filter((text) => CONFLICT_PATTERN.test(text))
+        .map((text) => `${result.brief_title}: ${text}`)
+    )
+  );
 
   return {
     summary,
@@ -36,7 +55,7 @@ export function summarizeSubagentResults(input: unknown): SubagentResultSummary 
       summary: result.summary,
       evidence: result.evidence
     })),
-    conflicts_or_disagreements: [],
+    conflicts_or_disagreements: conflicts,
     open_questions: openQuestions,
     recommended_next_steps: nextSteps,
     files_to_revisit: filesToRevisit,

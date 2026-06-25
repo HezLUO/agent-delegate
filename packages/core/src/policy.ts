@@ -166,7 +166,7 @@ export function assessDelegationNeed(input: unknown): DelegationAssessment {
   const ranked = Object.entries(scores).sort((a, b) => b[1] - a[1]) as Array<[ScoreName, number]>;
   const [bestName, bestScore] = ranked[0];
   const secondScore = ranked[1][1];
-  const recommendation = isAmbiguousGoal
+  const initialRecommendation = isAmbiguousGoal
     ? "ask_human"
     : bestScore <= 0 ? "continue_main_agent" : bestName === "dispatch_readonly" && guardrails.some((g) => g.severity === "high") ? "summarize_context" : bestName;
 
@@ -177,8 +177,18 @@ export function assessDelegationNeed(input: unknown): DelegationAssessment {
         secondScore,
         guardrails.filter((guardrail) => guardrail.severity === "high").length
       );
+  const strongSeparabilitySignal =
+    openQuestions >= 2 && modulesTouched >= 2 && bestScore - secondScore >= 2;
+  const recommendation =
+    initialRecommendation === "dispatch_readonly" &&
+    confidence === "low" &&
+    !strongSeparabilitySignal
+      ? "summarize_context"
+      : initialRecommendation;
   const suggestedBriefCount =
-    recommendation === "dispatch_readonly" ? Math.min(3, Math.max(1, openQuestions)) : undefined;
+    recommendation === "dispatch_readonly"
+      ? Math.min(state.constraints.max_subagents, Math.max(1, openQuestions))
+      : undefined;
 
   const suggestedNextStepByRecommendation: Record<ScoreName, string> = {
     continue_main_agent: "Continue in the main agent and make the next focused edit.",

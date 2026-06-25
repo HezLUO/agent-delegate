@@ -23,6 +23,26 @@ describe("generateDelegationBriefs", () => {
     expect(result.briefs[0].expected_output).toContain("Evidence");
   });
 
+  it("respects constraints max_subagents when generating briefs", () => {
+    const result = generateDelegationBriefs({
+      task: "Fix slow auth tests",
+      context_summary: "Auth tests are slow after session refactor.",
+      files_read: [
+        { path: "src/auth/session.ts", module: "auth" },
+        { path: "tests/auth/fixtures.ts", module: "tests" }
+      ],
+      open_questions: [
+        "Is runtime session refresh causing delay?",
+        "Are fixtures creating expired sessions?",
+        "Is middleware retrying too often?"
+      ],
+      constraints: { max_subagents: 1, allow_write_agents: false },
+      max_briefs: 3
+    });
+
+    expect(result.briefs).toHaveLength(1);
+  });
+
   it("returns no briefs when there are no bounded questions", () => {
     const result = generateDelegationBriefs({
       task: "Understand checkout",
@@ -156,6 +176,46 @@ describe("assessBriefQuality", () => {
         goal: "Change the fixture file.",
         scope: { files: ["tests/auth/fixtures.ts"] },
         context: "Auth fixtures create expired sessions.",
+        questions: ["Where is fixture session expiry set?"],
+        expected_output: ["Findings", "Evidence", "Recommended next step"],
+        budget: { max_files: 2, max_minutes: 10 },
+        stop_conditions: ["Stop after inspecting listed files"]
+      }
+    });
+
+    expect(result.quality).toBe("needs_revision");
+    expect(result.issues).toContain("Brief implies write access, which is out of scope for v1.");
+    expect(result.improved_brief).toBeNull();
+  });
+
+  it("rejects write instructions in the title without suggesting an improved brief", () => {
+    const result = assessBriefQuality({
+      brief: {
+        title: "Patch auth fixture setup",
+        mode: "readonly",
+        goal: "Determine whether auth fixtures create expired sessions.",
+        scope: { files: ["tests/auth/fixtures.ts"] },
+        context: "Auth fixtures create expired sessions.",
+        questions: ["Where is fixture session expiry set?"],
+        expected_output: ["Findings", "Evidence", "Recommended next step"],
+        budget: { max_files: 2, max_minutes: 10 },
+        stop_conditions: ["Stop after inspecting listed files"]
+      }
+    });
+
+    expect(result.quality).toBe("needs_revision");
+    expect(result.issues).toContain("Brief implies write access, which is out of scope for v1.");
+    expect(result.improved_brief).toBeNull();
+  });
+
+  it("rejects write instructions in the context without suggesting an improved brief", () => {
+    const result = assessBriefQuality({
+      brief: {
+        title: "Investigate auth fixture setup",
+        mode: "readonly",
+        goal: "Determine whether auth fixtures create expired sessions.",
+        scope: { files: ["tests/auth/fixtures.ts"] },
+        context: "After changing the fixture file, verify the expiry behavior.",
         questions: ["Where is fixture session expiry set?"],
         expected_output: ["Findings", "Evidence", "Recommended next step"],
         budget: { max_files: 2, max_minutes: 10 },
