@@ -1,0 +1,11 @@
+{
+  "task": "Make it better",
+  "current_phase": "planning",
+  "context_summary": "",
+  "files_read": [],
+  "open_questions": [],
+  "metrics": {
+    "turns_without_write": 0,
+    "tool_output_tokens_estimate": 0
+  }
+}
