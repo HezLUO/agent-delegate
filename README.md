@@ -36,6 +36,26 @@ Expected output includes a recommendation such as:
 }
 ```
 
+## Dogfood Before Release
+
+This project should be dogfooded before any open-source release. Unit tests are not enough because the core product is an MCP tool used by real agents.
+
+Run the MCP smoke test:
+
+```bash
+npm run smoke:mcp
+```
+
+Run realistic fixtures:
+
+```bash
+npm run agent-delegate -- analyze examples/dogfood-long-investigation.json
+npm run agent-delegate -- analyze examples/dogfood-small-edit.json
+npm run agent-delegate -- analyze examples/dogfood-ambiguous-goal.json
+```
+
+See [docs/dogfood.md](docs/dogfood.md) for the full dogfood protocol.
+
 ## Generate Rules
 
 ```bash
