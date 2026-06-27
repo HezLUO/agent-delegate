@@ -23,6 +23,26 @@ Required follow-up:
 - Configure the agent app with the MCP configuration printed by `doctor`.
 - Start a fresh agent session and confirm all five tools are visible before counting the trial as passed.
 
+## 2026-06-27 Codex MCP Visibility Retest
+
+- Agent app: Codex desktop background thread
+- Repository path: `/Users/james/Codex Project/General Codex Project/sub_ag_ski`
+- `npm run agent-delegate -- doctor`: pass
+- MCP tools visible in the agent session: yes
+- MCP tools successfully called: `record_event`, `assess_delegation_need`, `generate_delegation_briefs`, `assess_brief_quality`, `summarize_subagent_results`
+- Real task: MCP visibility dogfood retest with a simulated long read-only investigation state
+- Delegation recommendation observed: `dispatch_readonly` with high confidence
+- Brief generation observed: yes, 2 read-only briefs
+- Brief quality check observed: yes, first brief passed
+- Summary observed: yes, summary returned high confidence
+- Verdict: pass
+
+Notes:
+
+- The Codex global MCP configuration was updated with an `agent_delegate` stdio server entry pointing at this repository.
+- The first `record_event` call failed because the supplied `timestamp` did not satisfy the tool schema. Retrying without `timestamp` succeeded.
+- The successful retest used the real MCP tools exposed to a fresh Codex session, not shell substitutes.
+
 ## Template
 
 - Date:
