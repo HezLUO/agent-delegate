@@ -72,6 +72,15 @@ npm run agent-delegate -- init generic
 - `assess_brief_quality`
 - `summarize_subagent_results`
 
+## Documentation
+
+- [Dogfood protocol](docs/dogfood.md)
+- [MCP configuration](docs/mcp-configuration.md)
+- [Release checklist](docs/release-checklist.md)
+- [Contributing](CONTRIBUTING.md)
+- [Security policy](SECURITY.md)
+- [Changelog](CHANGELOG.md)
+
 ## Development
 
 ```bash
