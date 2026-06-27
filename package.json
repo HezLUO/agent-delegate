@@ -26,6 +26,7 @@
   ],
   "scripts": {
     "build": "npm run build --workspaces",
+    "pretest": "npm run build",
     "test": "vitest run",
     "typecheck": "tsc -b packages/core packages/mcp-server packages/cli",
     "agent-delegate": "tsx packages/cli/src/index.ts",
