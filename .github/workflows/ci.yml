@@ -45,11 +45,5 @@ jobs:
       - name: MCP smoke
         run: npm run smoke:mcp
 
-      - name: Dogfood long investigation fixture
-        run: npm run agent-delegate -- analyze examples/dogfood-long-investigation.json
-
-      - name: Dogfood small edit fixture
-        run: npm run agent-delegate -- analyze examples/dogfood-small-edit.json
-
-      - name: Dogfood ambiguous goal fixture
-        run: npm run agent-delegate -- analyze examples/dogfood-ambiguous-goal.json
+      - name: Dogfood fixture recommendations
+        run: npm run check:fixtures

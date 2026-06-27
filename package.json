@@ -30,6 +30,7 @@
     "test": "vitest run",
     "typecheck": "tsc -b packages/core packages/mcp-server packages/cli",
     "agent-delegate": "tsx packages/cli/src/index.ts",
+    "check:fixtures": "tsx scripts/check-fixtures.ts",
     "smoke:mcp": "tsx scripts/mcp-smoke.ts"
   },
   "devDependencies": {

@@ -3,14 +3,16 @@ import { realpathSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { analyzeCommand } from "./commands/analyze.js";
+import { doctorCommand } from "./commands/doctor.js";
 import { initCommand } from "./commands/init.js";
 import { serveCommand } from "./commands/serve.js";
 
 const USAGE =
-  "Usage: agent-delegate <serve | analyze <agent-state.json> | init <codex|claude-code|generic>>";
+  "Usage: agent-delegate <serve | doctor | analyze <agent-state.json> | init <codex|claude-code|generic>>";
 
 type ParsedCommand =
   | { command: "serve" }
+  | { command: "doctor" }
   | { command: "analyze"; path: string }
   | { command: "init"; target: string };
 
@@ -20,6 +22,7 @@ type Writable = {
 
 type CliIO = {
   stderr: Writable;
+  stdout?: Writable;
 };
 
 export function parseCommand(argv: string[]): ParsedCommand | null {
@@ -27,6 +30,10 @@ export function parseCommand(argv: string[]): ParsedCommand | null {
 
   if (command === "serve" && argv.length === 1) {
     return { command: "serve" };
+  }
+
+  if (command === "doctor" && argv.length === 1) {
+    return { command: "doctor" };
   }
 
   if (command === "analyze" && arg && argv.length === 2) {
@@ -93,6 +100,10 @@ export async function main(
     if (parsed?.command === "analyze") {
       analyzeCommand(parsed.path);
       return 0;
+    }
+
+    if (parsed?.command === "doctor") {
+      return await doctorCommand({ stdout: io.stdout ?? process.stdout });
     }
 
     if (parsed?.command === "init") {

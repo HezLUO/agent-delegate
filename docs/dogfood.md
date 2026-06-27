@@ -14,24 +14,26 @@ Run these commands before considering an open-source release:
 npm test
 npm run typecheck
 npm run build
+npm run agent-delegate -- doctor
 npm run smoke:mcp
+npm run check:fixtures
 ```
 
-Then run the dogfood fixtures:
-
-```bash
-npm run agent-delegate -- analyze examples/dogfood-long-investigation.json
-npm run agent-delegate -- analyze examples/dogfood-small-edit.json
-npm run agent-delegate -- analyze examples/dogfood-ambiguous-goal.json
-```
-
-Expected recommendations:
+`npm run check:fixtures` asserts the expected recommendations for the dogfood fixtures:
 
 | Fixture | Expected recommendation |
 | --- | --- |
 | `examples/dogfood-long-investigation.json` | `dispatch_readonly` |
 | `examples/dogfood-small-edit.json` | `continue_main_agent` |
 | `examples/dogfood-ambiguous-goal.json` | `ask_human` |
+
+You can inspect fixture output manually with:
+
+```bash
+npm run agent-delegate -- analyze examples/dogfood-long-investigation.json
+npm run agent-delegate -- analyze examples/dogfood-small-edit.json
+npm run agent-delegate -- analyze examples/dogfood-ambiguous-goal.json
+```
 
 ## Real Agent Trial
 
@@ -50,6 +52,8 @@ The agent should call:
 3. `generate_delegation_briefs` if the recommendation is `dispatch_readonly`.
 4. `assess_brief_quality` before dispatching a brief.
 5. `summarize_subagent_results` after read-only subagents return.
+
+Record each real trial in [dogfood-results.md](dogfood-results.md). If `doctor` passes but the agent cannot see the MCP tools, record that as a configuration failure rather than a passed dogfood run.
 
 ## Pass Criteria
 

@@ -28,6 +28,35 @@ Use this shape in tools that support local stdio MCP servers:
 
 Replace `/absolute/path/to/agent-delegate` with this repository path.
 
+## Local Doctor Check
+
+Run:
+
+```bash
+npm run agent-delegate -- doctor
+```
+
+The command verifies:
+
+- Dependencies are installed.
+- The local MCP server can be launched through stdio.
+- All five v1 MCP tools are visible to an MCP client.
+- The copyable MCP configuration uses the current repository path.
+
+Passing `doctor` proves the server works as an MCP stdio server from this repository. It does not prove that a specific agent app has loaded the MCP configuration.
+
+## Agent Visibility Check
+
+After adding the MCP configuration to an agent app, start a fresh agent session and ask it to confirm that these tool names are available:
+
+- `record_event`
+- `assess_delegation_need`
+- `generate_delegation_briefs`
+- `assess_brief_quality`
+- `summarize_subagent_results`
+
+If `doctor` passes but the agent cannot see those tools, treat it as an agent-app configuration problem first. Check that the app is using the same `cwd`, command, and arguments shown by `doctor`, then restart or recreate the agent session.
+
 ## Tools
 
 The server exposes:

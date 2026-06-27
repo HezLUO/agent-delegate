@@ -36,6 +36,10 @@ describe("parseCommand", () => {
     expect(parseCommand(["init", "codex"])).toEqual({ command: "init", target: "codex" });
   });
 
+  it("accepts doctor without arguments", () => {
+    expect(parseCommand(["doctor"])).toEqual({ command: "doctor" });
+  });
+
   it("rejects missing analyze arguments", () => {
     expect(parseCommand(["analyze"])).toBeNull();
   });
@@ -58,6 +62,10 @@ describe("parseCommand", () => {
 
   it("rejects extra init arguments", () => {
     expect(parseCommand(["init", "codex", "extra"])).toBeNull();
+  });
+
+  it("rejects extra doctor arguments", () => {
+    expect(parseCommand(["doctor", "extra"])).toBeNull();
   });
 });
 

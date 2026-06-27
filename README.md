@@ -22,6 +22,14 @@ npm run --silent agent-delegate -- serve
 
 Configure your agent tool to launch that command as a local MCP server.
 
+## Check MCP Setup
+
+```bash
+npm run agent-delegate -- doctor
+```
+
+`doctor` verifies that dependencies are installed, the local MCP server can start, and all five v1 MCP tools are visible through stdio. It also prints a copyable MCP configuration.
+
 ## Analyze a Sample Agent State
 
 ```bash
@@ -49,9 +57,7 @@ npm run smoke:mcp
 Run realistic fixtures:
 
 ```bash
-npm run agent-delegate -- analyze examples/dogfood-long-investigation.json
-npm run agent-delegate -- analyze examples/dogfood-small-edit.json
-npm run agent-delegate -- analyze examples/dogfood-ambiguous-goal.json
+npm run check:fixtures
 ```
 
 See [docs/dogfood.md](docs/dogfood.md) for the full dogfood protocol.
@@ -75,6 +81,7 @@ npm run agent-delegate -- init generic
 ## Documentation
 
 - [Dogfood protocol](docs/dogfood.md)
+- [Dogfood results](docs/dogfood-results.md)
 - [MCP configuration](docs/mcp-configuration.md)
 - [Release checklist](docs/release-checklist.md)
 - [Contributing](CONTRIBUTING.md)

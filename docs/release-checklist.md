@@ -10,10 +10,12 @@ Run:
 npm test
 npm run typecheck
 npm run build
+npm run agent-delegate -- doctor
 npm run smoke:mcp
+npm run check:fixtures
 ```
 
-Run dogfood fixtures:
+Inspect dogfood fixtures manually if needed:
 
 ```bash
 npm run agent-delegate -- analyze examples/dogfood-long-investigation.json
@@ -36,6 +38,7 @@ Expected recommendations:
 - `CHANGELOG.md` has an `Unreleased` section.
 - CI workflow exists and passes.
 - Dogfood protocol has been run in at least one real MCP-enabled agent workflow.
+- `docs/dogfood-results.md` records the latest real agent trial.
 
 ## Release Boundaries
 
