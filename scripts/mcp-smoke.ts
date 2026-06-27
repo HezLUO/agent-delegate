@@ -40,7 +40,7 @@ function appendChildStderr(error: unknown, stderr: string): never {
 async function main(): Promise<void> {
   const transport = new StdioClientTransport({
     command: "npm",
-    args: ["run", "agent-delegate", "--", "serve"],
+    args: ["run", "--silent", "agent-delegate", "--", "serve"],
     cwd: process.cwd(),
     stderr: "pipe"
   });
@@ -50,11 +50,24 @@ async function main(): Promise<void> {
   });
 
   const client = new Client({ name: "agent-delegate-smoke", version: "0.1.0" });
+  const clientErrors: Error[] = [];
+  client.onerror = (error) => {
+    clientErrors.push(error);
+  };
+
+  function assertNoClientErrors(): void {
+    if (clientErrors.length > 0) {
+      throw new Error(
+        `Unexpected MCP client error(s): ${clientErrors.map((error) => error.message).join("; ")}`
+      );
+    }
+  }
 
   try {
     await client.connect(transport);
 
     const tools = await client.listTools();
+    assertNoClientErrors();
     const names = tools.tools.map((tool) => tool.name).sort();
     const expectedNames = [...EXPECTED_TOOLS].sort();
     if (
@@ -178,6 +191,7 @@ async function main(): Promise<void> {
       throw new Error(`Expected summary confidence high, got ${summary.confidence}`);
     }
     console.log("Summary passed");
+    assertNoClientErrors();
     console.log("MCP smoke passed");
   } catch (error) {
     appendChildStderr(error, childStderr);

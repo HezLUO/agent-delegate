@@ -40,7 +40,7 @@ Configure the MCP server in one agent tool, then start a real coding task that r
 Launch the MCP server with:
 
 ```bash
-npm run agent-delegate -- serve
+npm run --silent agent-delegate -- serve
 ```
 
 The agent should call:

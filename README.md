@@ -17,7 +17,7 @@ npm install
 ## Run the MCP Server
 
 ```bash
-npm run agent-delegate -- serve
+npm run --silent agent-delegate -- serve
 ```
 
 Configure your agent tool to launch that command as a local MCP server.

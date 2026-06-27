@@ -47,7 +47,7 @@ describe("agent-delegate stdio MCP smoke", () => {
   it("lists and calls all v1 tools through stdio", async () => {
     transport = new StdioClientTransport({
       command: "npm",
-      args: ["run", "agent-delegate", "--", "serve"],
+      args: ["run", "--silent", "agent-delegate", "--", "serve"],
       cwd: process.cwd(),
       stderr: "pipe"
     });
@@ -58,9 +58,14 @@ describe("agent-delegate stdio MCP smoke", () => {
 
     try {
       client = new Client({ name: "agent-delegate-smoke-test", version: "0.1.0" });
+      const clientErrors: Error[] = [];
+      client.onerror = (error) => {
+        clientErrors.push(error);
+      };
       await client.connect(transport);
 
       const listed = await client.listTools();
+      expect(clientErrors).toEqual([]);
       const names = listed.tools.map((tool) => tool.name).sort();
       expect(names).toEqual([...EXPECTED_TOOLS].sort());
 
@@ -168,6 +173,7 @@ describe("agent-delegate stdio MCP smoke", () => {
       const summary = parseToolText(summaryResult) as { summary: string; confidence: string };
       expect(summary.summary).toContain("Fixtures create expired sessions");
       expect(summary.confidence).toBe("high");
+      expect(clientErrors).toEqual([]);
     } catch (error) {
       appendChildStderr(error, childStderr);
     }
