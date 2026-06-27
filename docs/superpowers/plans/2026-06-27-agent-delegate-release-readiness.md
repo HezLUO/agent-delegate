@@ -232,12 +232,12 @@ Modify `package.json` to add public metadata while preserving existing scripts, 
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/agent-delegate/agent-delegate.git"
+    "url": "https://github.com/HezLUO/agent-delegate.git"
   },
   "bugs": {
-    "url": "https://github.com/agent-delegate/agent-delegate/issues"
+    "url": "https://github.com/HezLUO/agent-delegate/issues"
   },
-  "homepage": "https://github.com/agent-delegate/agent-delegate#readme",
+  "homepage": "https://github.com/HezLUO/agent-delegate#readme",
   "keywords": [
     "mcp",
     "coding-agents",
