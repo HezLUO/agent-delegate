@@ -3,6 +3,22 @@
   "private": true,
   "version": "0.1.0",
   "description": "MCP-first delegation advisor for coding agents.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agent-delegate/agent-delegate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/agent-delegate/agent-delegate/issues"
+  },
+  "homepage": "https://github.com/agent-delegate/agent-delegate#readme",
+  "keywords": [
+    "mcp",
+    "coding-agents",
+    "subagents",
+    "delegation",
+    "agent-tools"
+  ],
   "workspaces": [
     "packages/core",
     "packages/mcp-server",
