@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 This project follows semantic versioning once public releases begin.
 
-## Unreleased
+## 0.1.0 - 2026-06-28
+
+Initial GitHub pre-release for early MCP-enabled dogfooding.
 
 ### Added
 
@@ -19,5 +21,8 @@ This project follows semantic versioning once public releases begin.
   - `serve`
   - `analyze`
   - `init`
+- `doctor` command for local MCP setup checks and copyable MCP configuration output.
 - Dogfood fixtures and MCP stdio smoke coverage.
+- Dogfood fixture recommendation assertions for CI.
+- Real MCP-enabled dogfood result records.
 - Rules snippets for Codex, Claude Code, and generic agents.
