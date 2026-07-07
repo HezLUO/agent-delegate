@@ -13,6 +13,12 @@ npm run build
 npm run agent-delegate -- doctor
 npm run smoke:mcp
 npm run check:fixtures
+npm pack --dry-run --workspace @agent-delegate/core
+npm pack --dry-run --workspace @agent-delegate/mcp-server
+npm pack --dry-run --workspace agent-delegate
+npm publish --dry-run --workspace @agent-delegate/core --access public
+npm publish --dry-run --workspace @agent-delegate/mcp-server --access public
+npm publish --dry-run --workspace agent-delegate --access public
 ```
 
 Inspect dogfood fixtures manually if needed:
@@ -39,6 +45,8 @@ Expected recommendations:
 - CI workflow exists and passes.
 - Dogfood protocol has been run in at least one real MCP-enabled agent workflow.
 - `docs/dogfood-results.md` records the latest real agent trial.
+- `npm pack --dry-run` shows only intended package artifacts.
+- npm package versions match the git release tag that will be published.
 
 ## Release Boundaries
 
@@ -56,3 +64,13 @@ The first public release must not claim:
 - Confirm issue templates render correctly.
 - Confirm CI passes on GitHub-hosted runners.
 - Add a release tag only after CI passes.
+
+## npm Publish Order
+
+Publish workspace dependencies before dependents:
+
+```bash
+npm publish --workspace @agent-delegate/core --access public
+npm publish --workspace @agent-delegate/mcp-server --access public
+npm publish --workspace agent-delegate --access public
+```

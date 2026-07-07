@@ -1,9 +1,14 @@
 {
   "name": "@agent-delegate/mcp-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "bin": {
     "agent-delegate-mcp": "dist/index.js"
   },
@@ -11,7 +16,7 @@
     "build": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@agent-delegate/core": "0.1.0",
+    "@agent-delegate/core": "0.1.1",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^3.25.0"
   }

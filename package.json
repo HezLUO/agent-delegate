@@ -1,7 +1,7 @@
 {
   "name": "agent-delegate-repo",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MCP-first delegation advisor for coding agents.",
   "license": "MIT",
   "repository": {

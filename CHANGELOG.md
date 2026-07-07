@@ -6,10 +6,16 @@ This project follows semantic versioning once public releases begin.
 
 ## Unreleased
 
+## 0.1.1 - 2026-07-07
+
 ### Fixed
 
 - `record_event` now accepts ISO 8601 timestamps with timezone offsets, such as
   `2026-06-27T20:47:12+08:00`, and reports a recovery-oriented validation message for invalid timestamps.
+
+### Changed
+
+- npm packages now publish only built `dist` artifacts plus npm's mandatory package metadata.
 
 ## 0.1.0 - 2026-06-28
 
