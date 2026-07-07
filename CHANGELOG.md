@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 This project follows semantic versioning once public releases begin.
 
+## Unreleased
+
+### Fixed
+
+- `record_event` now accepts ISO 8601 timestamps with timezone offsets, such as
+  `2026-06-27T20:47:12+08:00`, and reports a recovery-oriented validation message for invalid timestamps.
+
 ## 0.1.0 - 2026-06-28
 
 Initial GitHub pre-release for early MCP-enabled dogfooding.

@@ -40,7 +40,7 @@ Required follow-up:
 Notes:
 
 - The Codex global MCP configuration was updated with an `agent_delegate` stdio server entry pointing at this repository.
-- The first `record_event` call failed because the supplied `timestamp` did not satisfy the tool schema. Retrying without `timestamp` succeeded.
+- The first `record_event` call failed because the supplied `timestamp` did not satisfy the tool schema. Retrying without `timestamp` succeeded. This was fixed after `v0.1.0` by accepting ISO 8601 timestamps with timezone offsets and adding a clearer validation message.
 - The successful retest used the real MCP tools exposed to a fresh Codex session, not shell substitutes.
 
 ## Template

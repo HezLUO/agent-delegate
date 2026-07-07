@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   AgentStateSchema,
   DelegationBriefSchema,
+  RecordEventInputSchema,
   SubagentResultInputSchema
 } from "../src/schema";
 
@@ -47,5 +48,23 @@ describe("schema", () => {
     });
 
     expect(parsed.results[0].status).toBe("done");
+  });
+
+  it("explains how to recover from invalid event timestamps", () => {
+    const parsed = RecordEventInputSchema.safeParse({
+      event: {
+        type: "file_read",
+        timestamp: "June 27 2026",
+        path: "src/auth/session.ts"
+      }
+    });
+
+    expect(parsed.success).toBe(false);
+    if (parsed.success) {
+      throw new Error("Expected timestamp validation to fail");
+    }
+    expect(parsed.error.issues[0].message).toMatch(
+      /timestamp must be ISO 8601 with timezone, or omit timestamp/
+    );
   });
 });

@@ -137,6 +137,14 @@ export const SubagentResultSummarySchema = z.object({
   confidence: ConfidenceSchema
 });
 
+const EventTimestampSchema = z
+  .string()
+  .datetime({
+    offset: true,
+    message: "timestamp must be ISO 8601 with timezone, or omit timestamp"
+  })
+  .describe("Optional ISO 8601 timestamp with timezone, for example 2026-06-27T12:47:12Z or 2026-06-27T20:47:12+08:00. Omit this field to let the server set the current time.");
+
 export const AgentEventSchema = z.object({
   type: z.enum([
     "task_started",
@@ -149,7 +157,7 @@ export const AgentEventSchema = z.object({
     "plan_created",
     "delegation_decision"
   ]),
-  timestamp: z.string().datetime().optional(),
+  timestamp: EventTimestampSchema.optional(),
   summary: z.string().optional(),
   path: z.string().optional(),
   command: z.string().optional(),

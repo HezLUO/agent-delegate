@@ -74,6 +74,7 @@ describe("agent-delegate stdio MCP smoke", () => {
         arguments: {
           event: {
             type: "task_started",
+            timestamp: "2026-06-27T20:47:12+08:00",
             summary: "Fix slow auth tests"
           }
         }

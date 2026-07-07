@@ -17,6 +17,21 @@ describe("event store", () => {
     expect(store.get(result.session_id).events).toHaveLength(1);
   });
 
+  it("records events with ISO timestamps that include a timezone offset", () => {
+    const store = createInMemoryEventStore();
+    const result = store.record({
+      event: {
+        type: "file_read",
+        timestamp: "2026-06-27T20:47:12+08:00",
+        path: "src/auth/session.ts",
+        summary: "Session validation logic"
+      }
+    });
+
+    expect(result.ok).toBe(true);
+    expect(store.get(result.session_id).events[0].timestamp).toBe("2026-06-27T20:47:12+08:00");
+  });
+
   it("rejects secret-like summaries", () => {
     const store = createInMemoryEventStore();
     const result = store.record({
